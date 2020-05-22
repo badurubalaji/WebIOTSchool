@@ -29,8 +29,9 @@ public class UserController {
         return "Home";
     }
     @GetMapping(path = "/home")
-    public String start() {
-        return "Welcome Home";
+    public String start() throws Exception {
+
+        throw new Exception("home");
     }
     @PostMapping(path = "authenticate")
     public ResponseEntity<?> user(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
@@ -40,7 +41,7 @@ public class UserController {
             );
         }
         catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
+            throw new BadCredentialsException("Incorrect username or password", e);
         }
 
 
@@ -48,7 +49,8 @@ public class UserController {
                 .loadUserByUsername(authenticationRequest.getUsername());
 
         final String jwt = jwtTokenUtil.generateToken(userDetails);
+        //final String xsrfToken =
 
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        return ResponseEntity.ok(new AuthenticationResponse(jwt,"admin", userDetails.getUsername()));
     }
 }

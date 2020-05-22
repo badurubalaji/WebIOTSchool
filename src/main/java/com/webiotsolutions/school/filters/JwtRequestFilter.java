@@ -2,6 +2,8 @@ package com.webiotsolutions.school.filters;
 
 import com.webiotsolutions.school.security.util.JwtUtil;
 import com.webiotsolutions.school.services.SchoolUserService;
+import io.jsonwebtoken.ExpiredJwtException;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +26,7 @@ public class JwtRequestFilter  extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @SneakyThrows
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -34,8 +37,7 @@ public class JwtRequestFilter  extends OncePerRequestFilter {
         String jwt = null;
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            jwt = authorizationHeader.substring(7);
-            username = jwtUtil.extractUsername(jwt);
+                username = jwtUtil.extractUsername(authorizationHeader.substring(7));
         }
 
 
